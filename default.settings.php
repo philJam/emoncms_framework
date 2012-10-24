@@ -13,11 +13,9 @@
 
   /*
 
-  Menu settings
+  Core menu settings
  
   */
-
-  $menu_left = array();
 
   $menu_right = array();
   $menu_right[] = array('name'=>"Account", 'path'=>"user/view" , 'session'=>"write");
