@@ -1,12 +1,15 @@
 <?php
-  $display_errors = TRUE;
+
+  /*
+ 
+  Database connection settings
+
+  */
 
   $username = "";
   $password = "";
   $server   = "localhost";
   $database = "";
-
-  $theme = "basic";
 
   /*
 
@@ -35,15 +38,23 @@
   $default_action_auth = "view";
 
   // Public profile functionality
-  $public_profile_enabled = TRUE;
+  $public_profile_enabled = FALSE;
   $public_profile_controller = "user"; 
   $public_profile_action = "view";
 
+  /*
+
+  Other
+
+  */
+
+  // Theme location
+  $theme = "basic";
+  
+  // Error processing
+  $display_errors = TRUE;
+
+  // Allow user register in emoncms
   $allowusersregister = TRUE;
 
-  if ($display_errors)
-  {
-    error_reporting(E_ALL);
-    ini_set('display_errors', 'on');
-  }
 ?>
