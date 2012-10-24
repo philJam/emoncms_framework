@@ -15,9 +15,8 @@
   // Check if settings.php file exists
   if(!file_exists(dirname(__FILE__)."/settings.php"))
   {
-      //show_nosettingsfile_message();
-      echo 'Copy and modify default.settings.php to settings.php';
-      die;
+    echo 'Copy and modify default.settings.php to settings.php';
+    die;
   }
   else
   {
@@ -29,8 +28,6 @@
       error_reporting(E_ALL);      
       ini_set('display_errors', 'on');      
     }    
-    
-    
   }
 
 ?>
