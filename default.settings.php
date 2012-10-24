@@ -18,6 +18,7 @@
   */
 
   $menu_right = array();
+  $menu_right[] = array('name'=>"Admin", 'path'=>"admin/view" , 'session'=>"admin");
   $menu_right[] = array('name'=>"Account", 'path'=>"user/view" , 'session'=>"write");
   $menu_right[] = array('name'=>"Logout", 'path'=>"user/logout" , 'session'=>"write");
 
@@ -36,9 +37,9 @@
   $default_action_auth = "view";
 
   // Public profile functionality
-  $public_profile_enabled = FALSE;
-  $public_profile_controller = "user"; 
-  $public_profile_action = "view";
+  $public_profile_enabled = TRUE;
+  $public_profile_controller = "dashboard"; 
+  $public_profile_action = "run";
 
   /*
 
