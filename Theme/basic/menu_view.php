@@ -13,7 +13,15 @@
 
 ?>
 
-<ul class="nav">
+<style>
+#mainnav li:first-child a
+{
+  padding-left: 0px;
+}
+</style>
+
+<ul id="mainnav" class="nav" style="padding-left: 0px;">
+
 <?php 
 
 // Sort menu
@@ -23,11 +31,15 @@ function custom_sort($a,$b) {
   return $a['order']>$b['order'];
 }
 
+if (!isset($session['profile'])) $session['profile'] = 0;
+if ($session['profile']==0)
+{
 foreach ($menu_left as $item) 
 {
   if (isset($session[$item['session']]) && $session[$item['session']]==1) 
     echo "<li><a href=".$path.$item['path']." >"._($item['name'])."</a></li>";
 } 
+}
 ?>
 </ul>
 

@@ -28,13 +28,23 @@
       $proto = "https";
     }
 
-    $path = dirname("$proto://" . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME']) . "/";
+    if( isset( $_SERVER['HTTP_X_FORWARDED_SERVER'] ))
+        $path = dirname("$proto://" . server('HTTP_X_FORWARDED_SERVER') . server('SCRIPT_NAME')) . "/";
+    else
+        $path = dirname("$proto://" . server('HTTP_HOST') . server('SCRIPT_NAME')) . "/";
 
     return $path;
   }
 
   function emon_session_start()
   {
+    session_set_cookie_params(
+            3600 * 24 * 30, //lifetime, 30 days
+            "/", //path
+            "", //domain 
+            false, //secure
+            true//http_only
+    );
     session_start();
     if (isset($_SESSION['admin'])) $session['admin'] = $_SESSION['admin']; else $session['admin'] = 0;
     if (isset($_SESSION['read'])) $session['read'] = $_SESSION['read']; else $session['read'] = 0;

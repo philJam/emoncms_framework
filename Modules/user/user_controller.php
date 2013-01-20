@@ -28,7 +28,7 @@
   
   function user_controller()
   {
-    global $session, $route ,$allowusersregister;
+    global $session, $route ,$allowusersregister, $default_controller_auth, $default_action_auth;
 
     $format = $route['format'];
     $action = $route['action'];
@@ -61,7 +61,7 @@
         {	      	
       	  $output['message'] = _('Welcome, you are now logged in');
     	  if ($format == 'html'){
-      	    header('Location: ../user/view');
+      	    header('Location: ../'.$default_controller_auth.'/'.$default_action_auth);
 	  }
         }
       } 
@@ -119,8 +119,8 @@
     if ($action == 'changepass' && $_SESSION['write'])
     {
       $failed = FALSE;
-      $oldpass =  db_real_escape_string($_POST['oldpass']);
-      $newpass =  db_real_escape_string($_POST['newpass']);
+      $oldpass =  db_real_escape_string(post('oldpass'));
+      $newpass =  db_real_escape_string(post('newpass'));
       if (strlen($newpass) < 4 || strlen($newpass) > 30)
       {
         $failed = TRUE;
@@ -142,10 +142,10 @@
     // http://yoursite/emoncms/user/changepass?old=sdgs43&new=sdsg345
     if ($action == 'changedetails' && $_SESSION['write'])
     {
-      $username = preg_replace('/[^\w\s-.]/','',$_POST["username"]);
+      $username = preg_replace('/[^\w\s-.]/','',post("username"));
       $username =  db_real_escape_string($username);
 
-      $email = preg_replace('/[^\w\s-.@]/','',$_POST["email"]);
+      $email = preg_replace('/[^\w\s-.@]/','',post("email"));
       $email =  db_real_escape_string($email);
 
       $id = get_user_id($username);
@@ -209,16 +209,7 @@
     //--------------------------------------------------------------------------
     if ($action == 'logout' && $session['read'])
     { 
-        if ($_POST['CSRF_token'] == $_SESSION['CSRF_token'])
-        {
-          user_logout();
-          $output['message'] = _("You are logged out");
-        }
-        else
-        {
-          reset_CSRF_token();
-          $output['message'] = _("Invalid token");
-        }
+      user_logout();
 
       if ($format == 'html'){
         header("Location: ../");
@@ -264,7 +255,9 @@
     if ($action == 'setlang' && $session['write'])
     {
       // Store userlang in database
-      set_user_lang($session['userid'],$_GET['lang']);
+
+      $lang = preg_replace('/[^\w\s-]/','',get('lang'));
+      set_user_lang($session['userid'],$lang);
 
       // Reload the page	  	
       if ($format == 'html')
@@ -273,7 +266,13 @@
       }
     }
 
+    if ($action == 'admin' && $session['write'] && $session['admin'])
+    {
+      $userlist = get_user_list();    
+      usort($userlist, 'user_sortby_uphits');
+      $output['content'] = view("user/user_admin_view.php", array('userlist'=>$userlist));
+    }
+
     return $output;
   }
-
 ?>

@@ -39,7 +39,7 @@
   // Public profile functionality
   $public_profile_enabled = TRUE;
   $public_profile_controller = "dashboard"; 
-  $public_profile_action = "run";
+  $public_profile_action = "view";
 
   /*
 
@@ -55,5 +55,8 @@
 
   // Allow user register in emoncms
   $allowusersregister = TRUE;
+
+  // Skip database setup test - set to false once database has been setup.
+  $dbtest = true;
 
 ?>

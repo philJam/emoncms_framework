@@ -30,7 +30,7 @@
 
   function db_connect()
   {
-    global $mysqli, $server, $username, $password, $database;
+    global $mysqli, $server, $username, $password, $database, $dbtest;
     
     // ERROR CODES
     // 1: success!
@@ -44,14 +44,13 @@
       return 3;
     else
     {
-      $result = db_query("SELECT count(table_schema) from information_schema.tables WHERE table_schema = '$database'");
-      $row = db_fetch_array($result);
-                   
-      if ($row[0])
-        return 1;
-      else
-        return 4;
-
+      if ($dbtest==true)
+      {
+        $result = db_query("SELECT count(table_schema) from information_schema.tables WHERE table_schema = '$database'");
+        $row = db_fetch_array($result);
+        if (!$row[0]) return 4;
+      }
+      return 1;
     }
   }
 
@@ -151,12 +150,13 @@
           $result = db_query("DESCRIBE $table `$field`");
           $array = db_fetch_array($result);
           $query = "";
-
-          if ($array['Type']!=$type) { $out .= "Type: $type, "; $query .= ";"; }
-          if ($array['Default']!=$default) { $out .= "Default: $default, "; $query .= " Default '$default'"; }
-          if ($array['Null']!=$null && $null=="NO") { $out .= "Null: $null, "; $query .= " not null"; }
-          if ($array['Extra']!=$extra && $extra=="auto_increment") { $out .= "Extra: $extra"; $query .= " auto_increment"; }
-          if ($array['Key']!=$key && $key=="PRI") { $out .= "Key: $key, "; $query .= " primary key"; }
+          
+          $out_str = ""; // Not using this at the moment but good to break this out to the array
+          if ($array['Type']!=$type) { $out_str .= "Type: $type, "; $query .= ";"; }
+          if ($array['Default']!=$default) { $out_str .= "Default: $default, "; $query .= " Default '$default'"; }
+          if ($array['Null']!=$null && $null=="NO") { $out_str .= "Null: $null, "; $query .= " not null"; }
+          if ($array['Extra']!=$extra && $extra=="auto_increment") { $out_str .= "Extra: $extra"; $query .= " auto_increment"; }
+          if ($array['Key']!=$key && $key=="PRI") { $out_str .= "Key: $key, "; $query .= " primary key"; }
 
           if ($query) $query = "ALTER TABLE $table MODIFY `$field` $type".$query;
           if ($query) db_query($query);

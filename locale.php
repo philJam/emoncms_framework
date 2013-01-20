@@ -24,7 +24,7 @@ function directoryLocaleScan($dir) {
     foreach($objects as $entry => $object){ 
       $entry = str_replace($dir, '', $entry);
       if (basename(dirname($entry))=='locale')     
-        $dlist[] = basename($entry);
+        if (basename($entry)!='.' && basename($entry)!='..') $dlist[] = basename($entry);
     }
     
     return array_unique($dlist);
@@ -40,7 +40,7 @@ function lang_http_accept()
 {
 	$langs = array();
 	
-	foreach (explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']) as $lang) {
+	foreach (explode(',', server('HTTP_ACCEPT_LANGUAGE')) as $lang) {
 		$pattern = '/^(?P<primarytag>[a-zA-Z]{2,8})'.
     	'(?:-(?P<subtag>[a-zA-Z]{2,8}))?(?:(?:;q=)'.
     	'(?P<quantifier>\d\.\d))?$/';
@@ -50,7 +50,7 @@ function lang_http_accept()
 		if (preg_match($pattern, $lang, $splits)) {
 			// print_r($splits);
 			$a = $splits["primarytag"];
-			if ($splits["subtag"]<> "") $a = $a."_".$splits["subtag"];
+			if (isset($splits["subtag"]) && $splits["subtag"]<> "") $a = $a."_".$splits["subtag"];
 				$langs[]=$a;
     		} else {
         		//echo "\nno match\n"; 
@@ -63,7 +63,7 @@ function set_lang($language)
 {
 	// set the first browser selected language
 	// TODO: iterate to find a suitable available language
-	set_lang_by_user($language[0]);
+	if (isset($language[0])) set_lang_by_user($language[0]);
 }
 
 function set_lang_by_user($lang)
